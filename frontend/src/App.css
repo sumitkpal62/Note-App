@@ -30,5 +30,82 @@ body {
   border-radius: 5px;
   background-color: #f9f9f9;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notes-header {
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgb(0, 72, 155);
+  border-radius: 5px;
+  padding: 10px;
+  gap: 10px;
+}
+
+.notes-header img {
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 5px;
+  background: #ff8800;
+  cursor: pointer;
+}
+
+.notes-header button {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  font-size: 16px;
+  background: #ff8800;
+  border: none;
+  cursor: pointer;
+  max-width: fit-content;
+}
+
+h2 {
+  margin: 0;
+  text-decoration: underline;
+}
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+textarea,
+input {
+  border-radius: 5px;
+  border: 1px solid black;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.edit-note {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.edit-note button:nth-child(2) {
+  background-color: red;
+  opacity: 0.5;
+}
+
+.edit-note button:nth-child(2):hover {
+  background-color: rgb(255, 0, 0);
+  opacity: 1;
+}
+
+.note-form button {
+  border-radius: 5px;
+  background-color: rgb(106, 175, 198);
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  color: white;
+}
+
+.note-form button:hover {
+  background-color: rgb(64, 154, 184);
   cursor: pointer;
 }
