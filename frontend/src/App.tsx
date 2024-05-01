@@ -1,6 +1,8 @@
 import './App.css'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EditIcon from './assets/edit.svg'
+import DeleteIcon from './assets/delete.svg'
+import axios from 'axios';
 
 type Note = {
   id: number;
@@ -9,58 +11,84 @@ type Note = {
 }
 
 const App = () => {
-  const [notes, setNotes] = useState<Note[]>([
-    { id: 1, title: 'Note 1', content: 'Note 1 Content' },
-    { id: 2, title: 'Note 2', content: 'Note 2 Content' },
-    { id: 3, title: 'Note 3', content: 'Note 3 Content' },
-    { id: 4, title: 'Note 4', content: 'Note 4 Content' },
-    { id: 5, title: 'Note 5', content: 'Note 5 Content' },
-    { id: 6, title: 'Note 6', content: 'Note 6 Content' },
-  ]);
+  const [notes, setNotes] = useState<Note[]>([]);
 
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
   const [updateNote, setUpdateNote] = useState<Note | null>(null);
+  const [noteID, setNoteID] = useState<number | null>(null);
 
-  const handleAddNote = (event: React.FormEvent) => {
+  useEffect(() => {
+    const fetchNotes = async () => {
+      await axios.get('http://localhost:4000/api/notes').then((response) => {
+        setNotes(response.data)
+      }).catch((error) => {
+        console.log(error);
+      })
+    }
+    fetchNotes();
+  }, [])
+
+  const handleAddNote = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    const newNote: Note = {
-      id: notes.length + 1,
-      title: title,
-      content: content
-    }
-    setNotes([newNote, ...notes]);
-    setTitle('')
-    setContent('')
+
+    await axios.post('http://localhost:4000/api/notes', {
+      title,
+      content
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+
+    await axios.get('http://localhost:4000/api/notes').then((response) => {
+      setNotes(response.data)
+    }).catch((error) => {
+      console.log(error);
+    });
+
+    setTitle('');
+    setContent('');
+
   }
 
   const handleEditNote = (event: React.FormEvent) => {
-    const noteId = Number(event.currentTarget.id);
-    const note = notes.find((note) => note.id === noteId);
+    setNoteID(Number(event.currentTarget.id));
+    const note = notes.find((note) => note.id === noteID);
     if (note) {
       setUpdateNote(note);
       setTitle(note.title);
       setContent(note.content);
     }
-    console.log(updateNote)
   }
 
-  const handleUpdateButton = () => {
-    const updatedNotes = notes.map((note) => {
-      if (note.id === updateNote?.id) {
-        return {
-          ...note,
-          title: title,
-          content: content
+  const handleUpdateButton = async (event: React.FormEvent) => {
+
+    event.preventDefault();
+
+    await axios.put(`http://localhost:4000/api/notes/${noteID}`, {
+      title,
+      content
+    },
+      {
+        headers: {
+          "Content-Type": "application/json"
         }
-      }
-      return note;
-    });
-    setNotes(updatedNotes);
+      })
+      .catch((error) => console.log(error)
+      );
+
+    await axios.get('http://localhost:4000/api/notes')
+      .then((response) => setNotes(response.data))
+      .catch((error) => console.log(error))
+
     setTitle('');
     setContent('');
     setUpdateNote(null);
+    setNoteID(null)
   }
 
   const handleCancelButton = () => {
@@ -69,10 +97,16 @@ const App = () => {
     setUpdateNote(null);
   }
 
-  const handleClosebutton = (event: React.FormEvent) => {
-    const noteId = Number(event.currentTarget.id);
-    const filteredNotes = notes.filter((note) => note.id !== noteId);
-    setNotes(filteredNotes);
+  const handleClosebutton = async (event: React.FormEvent) => {
+
+    event.preventDefault();
+    const id = Number(event.currentTarget.id);
+
+    await axios.delete(`http://localhost:4000/api/notes/${id}`).catch((error) => console.log(error));
+
+    await axios.get('http://localhost:4000/api/notes')
+      .then((response) => setNotes(response.data))
+      .catch(error => console.log(error));
   }
 
   return (
@@ -112,7 +146,7 @@ const App = () => {
           <div key={note.id} className="note-item">
             <div className="notes-header">
               <img id={`${note.id}`} src={EditIcon} alt="Edit Icon" onClick={handleEditNote} />
-              <button id={`${note.id}`} onClick={handleClosebutton}>x</button>
+              <img id={`${note.id}`} src={DeleteIcon} alt="Edit Icon" onClick={handleClosebutton} />
             </div>
             <h2>{note.title}</h2>
             <p>{note.content}</p>

@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import { title } from 'process';
 
 const PORT = 4000;
 
@@ -14,7 +13,12 @@ app.use(cors());
 // Endpoints for getting all the notes from db.
 
 app.get('/api/notes', async (req, res) => {
-  const notes = await prisma.note.findMany();
+
+  const notes = await prisma.note.findMany({
+    orderBy: {
+      id: 'desc'
+    }
+  });
   res.json(notes);
 });
 
@@ -82,7 +86,7 @@ app.delete('/api/notes/:id', async (req, res) => {
   }
 
   try {
-    const resultedNote = await prisma.note.delete({
+    await prisma.note.delete({
       where: { id },
     })
     res.status(204).send();
