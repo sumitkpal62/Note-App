@@ -38,7 +38,7 @@ body {
 
 .notes-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   background-color: rgb(0, 72, 155);
   border-radius: 5px;
   padding: 10px;
@@ -47,6 +47,7 @@ body {
 
 .notes-header img {
   width: 20px;
+  margin: 0 2px;
   height: 20px;
   padding: 2px;
   border-radius: 5px;
