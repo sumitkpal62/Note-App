@@ -9,8 +9,6 @@ import { Dispatch } from "@reduxjs/toolkit";
 interface DisplayNotesProps {
   setUpdateNote: (note: Note | null) => void;
   setNoteID: (id: number | null) => void;
-  updateNote: Note | null;
-  noteID: number | null;
 }
 
 

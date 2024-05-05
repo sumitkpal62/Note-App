@@ -1,9 +1,16 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNotes, content, fetchNotes, setContent, setTitle, title, updateNotes } from "../features/noteSlice";
+import { Note, addNotes, content, fetchNotes, setContent, setTitle, title, updateNotes } from "../features/noteSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 
-const FormComponent: React.FC = ({ setUpdateNote, setNoteID, updateNote, noteID }) => {
+interface FormComponentProps {
+  setUpdateNote: (note: Note | null) => void;
+  setNoteID: (id: number | null) => void;
+  updateNote: Note | null;
+  noteID: number | null;
+}
+
+const FormComponent: React.FC<FormComponentProps> = ({ setUpdateNote, setNoteID, updateNote, noteID }) => {
 
   const dispatch: Dispatch = useDispatch();
   const titleValue = useSelector(title);
